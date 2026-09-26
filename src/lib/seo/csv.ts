@@ -21,7 +21,7 @@ function parseLine(line: string, delim: string): string[] {
 function num(v: string | undefined): number | undefined {
   if (v == null || v === "") return undefined;
   const pct = v.includes("%");
-  const n = parseFloat(v.replace(/[%\s,]/g, (m) => (m === "," ? "" : "")));
+  const n = parseFloat(v.replace(/[%\s,]/g, ""));
   if (isNaN(n)) return undefined;
   return pct ? n / 100 : n;
 }
