@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Audit analysis runs fully client-side in src/lib/seo (pure functions over GSC rows) — works for demo, CSV, and a future Search Console source without a backend.
