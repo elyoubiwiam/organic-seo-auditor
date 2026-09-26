@@ -47,31 +47,39 @@ function Index() {
       </div>
       <main className="mx-auto grid max-w-6xl gap-12 px-6 pb-20 pt-8 lg:grid-cols-[1.2fr_1fr]">
         <div>
-          <h1 className="font-display text-6xl leading-[1.02] md:text-7xl">
-            Find the clicks your site is <em className="text-primary">already</em> leaving on the table.
+          <h1 className="text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
+            Find the clicks your site is <span className="text-primary">already</span> leaving on the table.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            A Search Console audit that surfaces low-CTR pages, decaying queries and page-two keywords — then explains what it means and what to do next.
+            An audit of your Google Search data that shows what to fix first, explains why it matters, and compares you with your industry.
           </p>
-          <ul className="mt-10 grid max-w-xl grid-cols-2 gap-4 text-sm">
-            {["High-impression, low-CTR pages", "Decaying search queries", "Striking-distance keywords (11-20)", "CTR vs industry benchmarks"].map((t) => (
-              <li key={t} className="border-t pt-3">{t}</li>
+          <ul className="mt-10 grid max-w-xl grid-cols-2 gap-3 text-sm">
+            {[
+              ["bg-critical", "Pages people see but don't click"],
+              ["bg-high", "Searches losing traffic"],
+              ["bg-medium", "Keywords almost on page one"],
+              ["bg-low", "Comparison with your industry"],
+            ].map(([c, t]) => (
+              <li key={t} className="flex items-center gap-2 rounded-lg border bg-card px-3 py-2.5 shadow-card">
+                <span className={`h-2 w-2 shrink-0 rounded-full ${c}`} />
+                {t}
+              </li>
             ))}
           </ul>
         </div>
 
         <div className="space-y-4">
-          <button onClick={() => setDataset(buildSampleDataset())} className="group flex w-full items-center justify-between rounded-lg bg-ink p-6 text-left text-ink-foreground transition hover:opacity-95">
+          <button onClick={() => setDataset(buildSampleDataset())} className="group flex w-full items-center justify-between rounded-xl bg-primary p-6 text-left text-primary-foreground shadow-card transition hover:opacity-95">
             <div>
-              <div className="font-display text-3xl">Run demo audit</div>
-              <div className="mt-1 text-sm opacity-70">Sample SaaS site · 25 queries · 2 periods</div>
+              <div className="text-xl font-semibold">Run demo audit</div>
+              <div className="mt-1 text-sm opacity-80">Sample SaaS site · 25 searches · 2 periods</div>
             </div>
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-accent-foreground transition group-hover:scale-110">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-foreground text-primary transition group-hover:scale-110">
               <Play className="h-5 w-5" />
             </span>
           </button>
 
-          <div className="rounded-lg border bg-card p-6">
+          <div className="rounded-xl border bg-card p-6 shadow-card">
             <div className="font-medium">Upload a Search Console export</div>
             <p className="mt-1 text-sm text-muted-foreground">
               Performance → Export → CSV (Queries or Pages). Use “Compare” dates to detect decay.
