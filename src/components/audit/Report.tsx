@@ -210,7 +210,7 @@ function SectionTitle({ n, title, lead, icon }: { n: string; title: string; lead
   );
 }
 
-function Stat({ label, value, sub, bad, highlight }: { label: string; value: string; sub?: string; bad?: boolean; highlight?: boolean }) {
+function Stat({ label, value, sub, bad, highlight }: { label: string; value: string; sub?: string | undefined; bad?: boolean; highlight?: boolean }) {
   return (
     <div className={cn("bg-card p-5", highlight && "bg-accent")}>
       <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>

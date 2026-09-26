@@ -23,13 +23,13 @@ export type Recommendation = {
 export type Gap = { theme: string; evidence: string; idea: string; potential: number };
 
 export type Audit = {
-  totals: { clicks: number; impressions: number; ctr: number; position: number; clicksDelta?: number };
+  totals: { clicks: number; impressions: number; ctr: number; position: number; clicksDelta?: number | undefined };
   score: number;
   lowCtr: Finding[];
   decaying: Finding[];
   striking: Finding[];
   recommendations: Recommendation[];
-  ctrVsBenchmark: { position: number; site?: number; benchmark: number }[];
+  ctrVsBenchmark: { position: number; site?: number | undefined; benchmark: number }[];
   gaps: Gap[];
   hasComparison: boolean;
 };

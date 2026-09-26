@@ -33,8 +33,9 @@ function num(v: string | undefined): number | undefined {
 export function parseGscCsv(text: string): Row[] {
   const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter((l) => l.trim());
   if (lines.length < 2) throw new Error("The file looks empty.");
-  const delim = lines[0].includes("\t") ? "\t" : lines[0].split(";").length > lines[0].split(",").length ? ";" : ",";
-  const headers = parseLine(lines[0], delim).map((h) => h.toLowerCase());
+  const first = lines[0] ?? "";
+  const delim = first.includes("\t") ? "\t" : first.split(";").length > first.split(",").length ? ";" : ",";
+  const headers = parseLine(first, delim).map((h) => h.toLowerCase());
 
   const find = (test: (h: string) => boolean) => headers.findIndex(test);
   const isPrev = (h: string) => /previous|prior|before/.test(h);
@@ -58,8 +59,8 @@ export function parseGscCsv(text: string): Row[] {
     if (!impressions) continue;
     const clicks = ci >= 0 ? num(c[ci]) ?? 0 : 0;
     rows.push({
-      query: qi >= 0 ? c[qi] : "",
-      page: pi >= 0 ? c[pi] : "",
+      query: qi >= 0 ? c[qi] ?? "" : "",
+      page: pi >= 0 ? c[pi] ?? "" : "",
       clicks,
       impressions,
       ctr: ti >= 0 ? num(c[ti]) ?? clicks / impressions : clicks / impressions,

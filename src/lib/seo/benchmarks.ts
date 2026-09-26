@@ -22,7 +22,7 @@ export const INDUSTRIES: { key: IndustryKey; label: string }[] = [
 
 export function benchmarkCtr(position: number, industry: IndustryKey): number {
   const p = Math.max(1, Math.min(20, Math.round(position)));
-  return BASE[p - 1] * MULT[industry];
+  return (BASE[p - 1] ?? 0.005) * MULT[industry];
 }
 
 export function benchmarkCurve(industry: IndustryKey) {

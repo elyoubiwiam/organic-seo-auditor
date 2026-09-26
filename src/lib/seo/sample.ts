@@ -44,11 +44,11 @@ export function buildSampleDataset(): Dataset {
   const r = rng(42);
   const rows: Row[] = SEEDS.map(([query, page, imp, pos, f, trend]) => {
     const impressions = Math.round(imp * (0.92 + r() * 0.16));
-    const ctr = BASE_CTR[Math.min(19, Math.round(pos) - 1)] * f * (0.9 + r() * 0.2);
+    const ctr = (BASE_CTR[Math.min(19, Math.round(pos) - 1)] ?? 0.005) * f * (0.9 + r() * 0.2);
     const clicks = Math.round(impressions * ctr);
     const prevImpressions = Math.round(impressions / Math.max(0.4, trend * (0.95 + r() * 0.1)));
     const prevPosition = trend < 0.8 ? Math.max(1, pos - (1 - trend) * 6) : pos + (trend - 1) * 4;
-    const prevCtr = BASE_CTR[Math.min(19, Math.max(0, Math.round(prevPosition) - 1))] * f;
+    const prevCtr = (BASE_CTR[Math.min(19, Math.max(0, Math.round(prevPosition) - 1))] ?? 0.005) * f;
     return {
       query,
       page: "https://acmeplan.io" + page,
