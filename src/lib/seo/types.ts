@@ -5,9 +5,9 @@ export type Row = {
   impressions: number;
   ctr: number; // 0-1
   position: number;
-  prevClicks?: number;
-  prevImpressions?: number;
-  prevPosition?: number;
+  prevClicks?: number | undefined;
+  prevImpressions?: number | undefined;
+  prevPosition?: number | undefined;
 };
 
 export type Dataset = {
