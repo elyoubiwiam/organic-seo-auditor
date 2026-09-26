@@ -43,7 +43,7 @@ function Index() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto max-w-6xl px-6 py-8">
-        <div className="font-mono text-xs uppercase tracking-widest text-primary">Organic Auditor</div>
+        <div className="text-sm font-semibold text-primary">Organic Auditor</div>
       </div>
       <main className="mx-auto grid max-w-6xl gap-12 px-6 pb-20 pt-8 lg:grid-cols-[1.2fr_1fr]">
         <div>
@@ -86,7 +86,7 @@ function Index() {
             </p>
             <label className="mt-4 flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Industry</span>
-              <select value={industry} onChange={(e) => setIndustry(e.target.value as IndustryKey)} className="rounded border bg-background px-2 py-1">
+              <select value={industry} onChange={(e) => setIndustry(e.target.value as IndustryKey)} className="rounded-lg border bg-background px-3 py-1.5">
                 {INDUSTRIES.map((i) => <option key={i.key} value={i.key}>{i.label}</option>)}
               </select>
             </label>
@@ -95,14 +95,14 @@ function Index() {
               onClick={() => fileRef.current?.click()}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => { e.preventDefault(); onFile(e.dataTransfer.files[0]); }}
-              className="mt-4 flex w-full flex-col items-center gap-2 rounded-md border-2 border-dashed p-6 text-sm text-muted-foreground hover:border-primary hover:text-foreground"
+              className="mt-4 flex w-full flex-col items-center gap-2 rounded-lg border-2 border-dashed p-6 text-sm text-muted-foreground hover:border-primary hover:text-foreground"
             >
               <Upload className="h-5 w-5" /> Drop CSV here or click to browse
             </button>
             {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
           </div>
 
-          <div className="flex items-center gap-3 rounded-lg border border-dashed p-5 text-sm text-muted-foreground">
+          <div className="flex items-center gap-3 rounded-xl border border-dashed p-5 text-sm text-muted-foreground">
             <Link2 className="h-4 w-4 shrink-0" />
             <span>Direct Search Console connection — coming soon.</span>
           </div>
