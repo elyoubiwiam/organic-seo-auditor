@@ -10,12 +10,41 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as AuthenticatedAuditsRouteImport } from './routes/_authenticated/audits'
+import { Route as AuthenticatedAuditsIdRouteImport } from './routes/_authenticated/audits.$id'
 import { Route as ApiPublicGscCallbackRouteImport } from './routes/api/public/gsc/callback'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAuditsRoute = AuthenticatedAuditsRouteImport.update({
+  id: '/audits',
+  path: '/audits',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAuditsIdRoute = AuthenticatedAuditsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedAuditsRoute,
 } as any)
 const ApiPublicGscCallbackRoute = ApiPublicGscCallbackRouteImport.update({
   id: '/api/public/gsc/callback',
@@ -25,27 +54,63 @@ const ApiPublicGscCallbackRoute = ApiPublicGscCallbackRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/audits': typeof AuthenticatedAuditsRouteWithChildren
+  '/audits/$id': typeof AuthenticatedAuditsIdRoute
   '/api/public/gsc/callback': typeof ApiPublicGscCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/audits': typeof AuthenticatedAuditsRouteWithChildren
+  '/audits/$id': typeof AuthenticatedAuditsIdRoute
   '/api/public/gsc/callback': typeof ApiPublicGscCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/privacy': typeof PrivacyRoute
+  '/_authenticated/audits': typeof AuthenticatedAuditsRouteWithChildren
+  '/_authenticated/audits/$id': typeof AuthenticatedAuditsIdRoute
   '/api/public/gsc/callback': typeof ApiPublicGscCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/public/gsc/callback'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/privacy'
+    | '/audits'
+    | '/audits/$id'
+    | '/api/public/gsc/callback'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/public/gsc/callback'
-  id: '__root__' | '/' | '/api/public/gsc/callback'
+  to:
+    | '/'
+    | '/auth'
+    | '/privacy'
+    | '/audits'
+    | '/audits/$id'
+    | '/api/public/gsc/callback'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/privacy'
+    | '/_authenticated/audits'
+    | '/_authenticated/audits/$id'
+    | '/api/public/gsc/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  PrivacyRoute: typeof PrivacyRoute
   ApiPublicGscCallbackRoute: typeof ApiPublicGscCallbackRoute
 }
 
@@ -58,6 +123,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/audits': {
+      id: '/_authenticated/audits'
+      path: '/audits'
+      fullPath: '/audits'
+      preLoaderRoute: typeof AuthenticatedAuditsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/audits/$id': {
+      id: '/_authenticated/audits/$id'
+      path: '/$id'
+      fullPath: '/audits/$id'
+      preLoaderRoute: typeof AuthenticatedAuditsIdRouteImport
+      parentRoute: typeof AuthenticatedAuditsRoute
+    }
     '/api/public/gsc/callback': {
       id: '/api/public/gsc/callback'
       path: '/api/public/gsc/callback'
@@ -68,8 +168,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAuditsRouteChildren {
+  AuthenticatedAuditsIdRoute: typeof AuthenticatedAuditsIdRoute
+}
+
+const AuthenticatedAuditsRouteChildren: AuthenticatedAuditsRouteChildren = {
+  AuthenticatedAuditsIdRoute: AuthenticatedAuditsIdRoute,
+}
+
+const AuthenticatedAuditsRouteWithChildren =
+  AuthenticatedAuditsRoute._addFileChildren(AuthenticatedAuditsRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAuditsRoute: typeof AuthenticatedAuditsRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAuditsRoute: AuthenticatedAuditsRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  PrivacyRoute: PrivacyRoute,
   ApiPublicGscCallbackRoute: ApiPublicGscCallbackRoute,
 }
 export const routeTree = rootRouteImport
