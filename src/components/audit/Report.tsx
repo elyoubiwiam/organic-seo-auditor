@@ -27,7 +27,7 @@ const SECTIONS = [
   { id: "strategy", label: "Strategy" },
 ];
 
-export function Report({ dataset, onReset }: { dataset: Dataset; onReset: () => void }) {
+export function Report({ dataset, onReset, top }: { dataset: Dataset; onReset: () => void; top?: React.ReactNode }) {
   const [industry, setIndustry] = useState<IndustryKey>(dataset.industry);
   const audit = useMemo(() => runAudit({ ...dataset, industry }), [dataset, industry]);
   const industryLabel = INDUSTRIES.find((i) => i.key === industry)?.label ?? "";
@@ -64,6 +64,7 @@ export function Report({ dataset, onReset }: { dataset: Dataset; onReset: () => 
           </ul>
         </nav>
         <main className="min-w-0 space-y-16">
+          {top}
           <Overview audit={audit} />
           <TopPriorities recs={audit.recommendations} />
           <Issues audit={audit} />
