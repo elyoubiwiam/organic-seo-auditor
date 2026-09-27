@@ -1,31 +1,39 @@
-# Connect Google Search Console (private to the owner)
+# Private per-user Search Console audits with AI analysis
 
 ## What it does (short)
-Instead of exporting a CSV, you link your Google account once. The app lists the websites you manage in Search Console, you pick one, and it pulls the last 3 months of search data (plus the 3 months before, to spot searches losing traffic). The same audit report runs on that live data.
+Each visitor creates an account, links their own Google Search Console, picks one of their sites, and gets an audit plus an AI-written analysis: what's really happening, why, and a prioritised plan to improve. It doesn't replace Google's tool — it explains the data and tells you what to do. Past audits are saved to their account.
 
-## Keeping the data private
-Google connection happens once, on your side, with your account. There is no way yet for each visitor to connect their own Google account for Search Console. So privacy works through a login:
-- You sign in to the app (email or Google). Your account is marked as the owner.
-- Only the owner can see the "Connect Search Console" card, the site list and the live data.
-- Everyone else only sees the demo and CSV upload. Even if someone tries to reach the data directly, the server refuses them.
-- Nothing from Search Console is saved or shared; it's fetched when you run the audit.
+## Privacy
+- Each person only ever sees their own sites and audits. Not you, not other users.
+- Their Google access is stored encrypted and only used when they run an audit. They can disconnect anytime, which deletes it.
+- Saved audits are locked to their account by database rules; the server also checks the signed-in person on every request.
+- You, as the owner, won't have a screen showing anyone's data.
 
-## What changes on the start screen
-- A small "Sign in" link at the top.
-- Signed in as owner: the "coming soon" box becomes "Connect Search Console" with a site picker, the industry picker and "Run audit".
-- Signed out or not the owner: the box says "Sign in as the owner to use live Search Console data".
-- Clear messages when no site is found, access is refused, or Google returns an error.
+## What you'll need to do (one-time)
+Google requires every app reading Search Console to have its own Google sign-in setup. I'll guide you step by step:
+1. Create a free Google Cloud project and turn on the Search Console API.
+2. Create sign-in credentials and paste in the web address I give you.
+3. Paste the two codes into the secure form I'll open.
+Until Google reviews the app, up to 100 people you list as testers can use it. For public launch you submit it to Google for review (privacy policy page needed — I'll add one).
+
+## What visitors will see
+- Sign up / sign in (email or Google).
+- "Connect Search Console" button, then a site picker and industry picker, then "Run audit".
+- The existing report, plus a new "AI analysis" section at the top: summary, key insights, root causes, and a step-by-step 90-day plan.
+- "My audits" page listing saved audits to reopen or delete.
+- Demo and CSV upload stay (CSV audits can also get AI analysis and be saved).
 
 ## Steps
-1. Turn on Lovable Cloud for login, and add a sign-in page.
-2. Add an owner role; you become the owner (the first account that signs up gets it).
-3. Link Google Search Console to the project (a connect card will appear for you to sign in with Google).
-4. Add the server steps that list sites and fetch data, allowed for the owner only.
-5. Replace the "coming soon" box and test end to end signed in as owner and as a non-owner.
+1. Turn on Lovable Cloud: accounts, database, AI.
+2. Build sign-in, "My audits", and privacy policy pages.
+3. Guide you through Google setup and collect the two codes securely.
+4. Build the Google link (connect, pick site, fetch 2 x 3 months, disconnect).
+5. Add AI analysis and save audits.
+6. Test end to end with two different accounts to confirm neither sees the other's data.
 
 ## Technical details
-- Cloud auth (email/password + Google via Lovable broker), `/auth` page, `onAuthStateChange` in `__root.tsx`.
-- `app_role` enum + `user_roles` table + `has_role()` security-definer function (with grants + RLS). Trigger grants `admin` to the first user only.
-- `src/lib/seo/gsc.functions.ts`: `listSites` and `fetchPerformance({ siteUrl })` with `.middleware([requireSupabaseAuth])`, then `has_role(userId,'admin')` check, else 403. Sites listed via GET `/webmasters/v3/sites` (verified only); chosen `siteUrl` re-validated against that list; POST `searchAnalytics/query`, dimensions `query,page`, rowLimit 5000, two 3-month windows ending 3 days ago. Gateway with `LOVABLE_API_KEY` + `GOOGLE_SEARCH_CONSOLE_API_KEY`, read in handlers; errors surface status and body.
-- Merge previous period by `query|page` into `prev*` fields; analysis stays client-side in `src/lib/seo`.
-- `src/components/audit/GscConnect.tsx` via `useServerFn` + react-query; `src/start.ts` gets the auth attacher.
+- Cloud auth: email/password + Google (broker). `_authenticated/` for `/audits`, `/audits/$id`; `/auth`, `/privacy` public.
+- Tables (grants + RLS `user_id = auth.uid()`): `gsc_connections(user_id pk, refresh_token_encrypted, google_email, created_at)` — no client SELECT on token; `audits(id, user_id, site, industry, source, rows jsonb, audit jsonb, ai_analysis jsonb, created_at)`.
+- Custom OAuth: secrets `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, generated `TOKEN_ENCRYPTION_KEY`, `OAUTH_STATE_SECRET`. Scope `webmasters.readonly`, `access_type=offline`, `prompt=consent`. Start via server fn returning auth URL with signed state (userId + nonce); callback at `/api/public/gsc/callback` verifies state, exchanges code, AES-GCM encrypts refresh token, upserts via admin client after state check.
+- Server fns (`requireSupabaseAuth`): `gscStatus`, `listSites` (verified only), `fetchPerformance({siteUrl})` (re-validates siteUrl, refreshes access token, `query,page` rows, 2 windows), `disconnectGsc` (revokes + deletes), `generateAiAnalysis({auditId})` via Lovable AI Gateway (google/gemini-3-flash-preview, structured output from aggregated findings, not raw PII), `saveAudit`, `listAudits`, `deleteAudit`.
+- Analysis engine stays client-side in `src/lib/seo`; AI section added to `Report.tsx`.
