@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audits: {
+        Row: {
+          ai_analysis: Json | null
+          created_at: string
+          id: string
+          industry: string
+          rows: Json
+          site: string
+          source: string
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          created_at?: string
+          id?: string
+          industry: string
+          rows: Json
+          site: string
+          source: string
+          user_id?: string
+        }
+        Update: {
+          ai_analysis?: Json | null
+          created_at?: string
+          id?: string
+          industry?: string
+          rows?: Json
+          site?: string
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      gsc_connections: {
+        Row: {
+          created_at: string
+          google_email: string | null
+          refresh_token_encrypted: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          google_email?: string | null
+          refresh_token_encrypted: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          google_email?: string | null
+          refresh_token_encrypted?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
