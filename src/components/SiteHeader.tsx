@@ -2,6 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import icon from "@/assets/icon.png";
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
@@ -15,7 +16,10 @@ export function SiteHeader() {
   };
   return (
     <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-      <Link to="/" className="text-sm font-semibold text-primary">Organic Auditor</Link>
+      <Link to="/" className="flex items-center gap-2">
+        <img src={icon} alt="" width={24} height={24} className="h-6 w-6" />
+        <span className="text-sm font-semibold text-primary">Organic Auditor</span>
+      </Link>
       <nav className="flex items-center gap-4 text-sm">
         {loading ? null : user ? (
           <>
