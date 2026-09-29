@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { Upload, Play } from "lucide-react";
 import { Report } from "@/components/audit/Report";
-import { GscConnect } from "@/components/audit/GscConnect";
 import { SiteHeader } from "@/components/SiteHeader";
 import { buildSampleDataset } from "@/lib/seo/sample";
 import { parseGscCsv } from "@/lib/seo/csv";
@@ -15,7 +14,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Organic Auditor — Search Console audit with AI analysis" },
-      { name: "description", content: "Connect Search Console privately and get an AI analysis of low-CTR pages, decaying queries and striking-distance keywords, with a 90-day plan." },
+      { name: "description", content: "Upload your Search Console CSV and get an AI analysis of low-CTR pages, decaying queries and striking-distance keywords, with a 90-day plan." },
       { property: "og:title", content: "Organic Auditor — Search Console audit with AI analysis" },
       { property: "og:description", content: "Private Search Console audits with AI insights and a clear plan to grow organic traffic." },
       { property: "og:type", content: "website" },
@@ -68,7 +67,7 @@ function Index() {
             Find the clicks your site is <span className="text-primary">already</span> leaving on the table.
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-            Connect your Google Search data and get an AI analysis that explains what's really happening, why, and exactly what to do next. Your data stays private to you.
+            Upload your Search Console CSV export and get an AI analysis that explains what's really happening, why, and exactly what to do next. Your data stays private to you.
           </p>
           <ul className="mt-10 grid max-w-xl grid-cols-2 gap-3 text-sm">
             {[
@@ -93,12 +92,10 @@ function Index() {
             </select>
           </label>
 
-          <GscConnect onRows={(site, rows) => open({ name: site, site: site.replace(/^sc-domain:/, ""), industry, rows }, "gsc")} />
-
           <div className="rounded-xl border bg-card p-6 shadow-card">
-            <div className="font-medium">Or upload a Search Console export</div>
+            <div className="font-medium">Upload your Search Console CSV</div>
             <p className="mt-1 text-sm text-muted-foreground">
-              Performance → Export → CSV (Queries or Pages). Use “Compare” dates to detect decay.
+              Drop in your export and we'll analyse it instantly. In Search Console: Performance → Export → CSV (Queries or Pages). Tip: use “Compare” dates to spot searches losing traffic.
             </p>
             <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
             <button
