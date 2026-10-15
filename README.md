@@ -40,4 +40,4 @@ Upload a Google Search Console export, or connect Search Console directly. Organ
 
 ---
 
-Built by **Wiam El Youbi**.
+Built by **Wiam El Youbi**, [wiam-elyoubi.com](https://wiam-elyoubi.com).
